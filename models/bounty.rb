@@ -13,5 +13,31 @@ class Bounty
     @favourite_weapon = options['favourite_weapon']
   end
 
+  def save()
+    db = PG.connect({
+      dbname: 'bounties',
+      host: 'localhost'
+    })
+    sql = "
+    INSERT INTO bounties
+    (
+      name,
+      species,
+      last_know_location,
+      favourite_weapon
+    )
+    VALUES
+    (
+      $1, $2, $3, $4
+    )
+    RETURNING *
+    "
+    values = [@name, @species, @last_know_location, @favourite_weapon]
+    db.prepare("save", sql)
+    db.exec_prepared("save", values)[0]['id'].to_i
+    db.close()
+  end
+
+
 
 end
