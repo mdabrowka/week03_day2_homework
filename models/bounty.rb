@@ -51,8 +51,30 @@ class Bounty
 
     bounties_as_objects = bounties.map{|bounty| Bounty.new(bounty)}
     return bounties_as_objects
-
   end
+
+  def self.delete_all()
+    db = PG.connect({
+      dbname: 'bounties',
+      host: 'localhost'
+      })
+      sql = "DELETE FROM bounties"
+      values = []
+      db.prepare("delete_all", sql)
+      db.exec_prepared("delete_all", values)
+      db.close()
+  end
+
+  def delete()
+    db = PG.connect({
+      dbname: 'bounties',
+      host: 'localhost'
+      })
+      sql = "DELETE FROM bounties WHERE id = $1"
+      values =[@id]
+      db.prepare("delete_1", sql)
+  end
+
 
 
 end
